@@ -3,9 +3,10 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import re
 import json
+import csv
 
 # Clear contents of file if it exists
-open('output.txt', 'w').close()
+open('output.csv', 'w').close()
 
 #Call and parse autions page
 main_url = 'https://bringatrailer.com/auctions/results/'
@@ -69,14 +70,12 @@ def scrapeAuction(url, master_index):
 			bidder_names[index] += '*'
 		index += 1
 
-	#Write tab delimited text file with results
-	with open('output.txt', 'a') as f:
-		f.write('\t'.join(bidder_names))
-		f.write('\n')
-		f.write('\t'.join(bid_times))
-		f.write('\n')
-		f.write('\t'.join(bid_amounts))
-		f.write('\n')
+	#Write comma delimited CSV file with results
+	with open('output.csv', mode='a') as f:
+		bid_writer = csv.writer(f, delimiter=',')
+		bid_writer.writerow(bidder_names)
+		bid_writer.writerow(bid_times)
+		bid_writer.writerow(bid_amounts)
 
 	print('Data row ' + str(master_index) + ' of ' + str(len(auction_urls)) + ' (' + str(len(bidder_names)) + ' bids) added to file.')
 
